@@ -31,35 +31,97 @@ describe('app routes', () => {
       return client.end(done);
     });
 
-    test('returns todos', async() => {
+    test.skip('todos', async() => {
 
       const expectation = [
+       
         {
-          id: 3,
-          task: 'wash the dishes',
+          id: 4,
+          task: 'drink tea',
           completed: false,
-          owner_id: 1
+          owner_id: 2,
         },
         {
-          id: 2,
+          id: 5,
           task: 'wash car',
           completed: false,
-          owner_id: 1
+          owner_id: 2,
         },
         {
-          id: 1,
+          id: 6,
           task: 'vacuum',
           completed: false,
-          owner_id: 1
+          owner_id: 2,
         },
       ];
 
-      const data = await fakeRequest(app)
-        .get('/todos')
+
+
+      await fakeRequest(app)
+        .post('/api/todos')
+        .send(expectation[0])
+        .set('Authorization', token)
         .expect('Content-Type', /json/)
         .expect(200);
 
+      await fakeRequest(app)
+        .post('/api/todos')
+        .send(expectation[1])
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      await fakeRequest(app)
+        .post('/api/todos')
+        .send(expectation[2])
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      const data = await fakeRequest(app)
+        .get('/api/todos')
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+        
+
       expect(data.body).toEqual(expectation);
     });
+
+
+    //GET TEST
+    test('returns a single todo item', async() => {
+      const expectation = {
+        
+        id: 4,
+        task: 'drink tea',
+        completed: false,
+        owner_id: 2,
+        
+      };
+  
+
+      await fakeRequest(app)
+        .post('/api/todos')
+        .send(expectation[0])
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+
+      const data = await fakeRequest(app)
+        .get('/api/todos/4')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+
+  
+      expect(data.body).toEqual(expectation);
+    });
+
+
+
+
+
   });
 });

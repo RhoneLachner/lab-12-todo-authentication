@@ -12,7 +12,7 @@ module.exports = [
   {
     id: 1,
     task: 'vacuum',
-    completed: true,
-  }
+    completed: false,
+  },
 ];
   
